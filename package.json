@@ -10,7 +10,9 @@
 		"ionic:build": "cd .",
 		"ios-dev": "ionic cap run ios --external --livereload",
 		"android-dev": "ionic cap run android --external --livereload",
-		"bundle": "tsc -p tsconfig.release.json && terser ./build/squares.js > ./build/squares.min.js"
+		"esm": "sed 's/\\/\\/+ //' ./build/raw.js > ./build/raw.esm.js",
+		"bundle": "tsc -p tsconfig.release.json && terser ./build/squares.js > ./build/squares.min.js && npm run esm",
+		"release": "npm run bundle && cd ./build && cp ../package.json ./package.json && np && cp ./package.json ../package.json"
 	},
 	"license": "MIT",
 	"dependencies": {

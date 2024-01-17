@@ -1,0 +1,26 @@
+{
+	"name": "squares",
+	"author": "Paul Gordon",
+	"description": "A library for creating browsable tile UIs",
+	"version": "0.0.0",
+	"main": "squares.js",
+	"scripts": {
+		"serve-feeds": "vite ./+feeds --host --cors --port 43332",
+		"ionic:serve": "vite ./build --host --cors",
+		"ionic:build": "cd .",
+		"ios-dev": "ionic cap run ios --external --livereload",
+		"android-dev": "ionic cap run android --external --livereload",
+		"bundle": "tsc -p tsconfig.release.json && terser ./build/squares.js > ./build/squares.min.js"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"@squaresapp/hatjs": "^1.0.2",
+		"@squaresapp/rawjs": "^1.3.12"
+	},
+	"peerDependencies": {
+		"moduless": "^3.2.5"
+	},
+	"devDependencies": {
+		"vite": "^5.0.11"
+	}
+}

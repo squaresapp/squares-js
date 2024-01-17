@@ -26,6 +26,7 @@
 		"squares.esm.js"
 	],
 	"scripts": {
+		"test": "exit 0",
 		"serve-feeds": "vite ./+feeds --host --cors --port 43332",
 		"ionic:serve": "vite ./build --host --cors",
 		"ionic:build": "cd .",

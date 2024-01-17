@@ -1,16 +1,37 @@
 {
-	"name": "squares",
+	"name": "squaresjs",
 	"author": "Paul Gordon",
 	"description": "A library for creating browsable tile UIs",
 	"version": "0.0.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/squaresapp/squaresjs"
+	},
+	"bugs": {
+		"url": "https://github.com/squaresapp/squaresjs/issues"
+	},
 	"main": "squares.js",
+	"browser": "squares.js",
+	"module": "squares.esm.js",
+	"types": "squares.d.ts",
+	"publishConfig": {
+		"access": "public"
+	},
+	"files": [
+		"readme.md",
+		"squares.js",
+		"squares.min.js",
+		"squares.d.ts",
+		"squares.d.ts.map",
+		"squares.esm.js"
+	],
 	"scripts": {
 		"serve-feeds": "vite ./+feeds --host --cors --port 43332",
 		"ionic:serve": "vite ./build --host --cors",
 		"ionic:build": "cd .",
 		"ios-dev": "ionic cap run ios --external --livereload",
 		"android-dev": "ionic cap run android --external --livereload",
-		"esm": "sed 's/\\/\\/+ //' ./build/raw.js > ./build/raw.esm.js",
+		"esm": "sed 's/\\/\\/+ //' ./build/squares.js > ./build/squares.esm.js",
 		"bundle": "tsc -p tsconfig.release.json && terser ./build/squares.js > ./build/squares.min.js && npm run esm",
 		"release": "npm run bundle && cd ./build && cp ../package.json ./package.json && np && cp ./package.json ../package.json"
 	},

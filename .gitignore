@@ -4,5 +4,5 @@ node_modules
 package-lock.json
 build/package.json
 build/squares.*
-ios/App/App.xcodeproj/project.xcworkspace/xcshareddata/*
-ios/DerivedData
+android/*
+ios/*

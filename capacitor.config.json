@@ -1,0 +1,15 @@
+{
+	"appId": "squares.js",
+	"appName": "SquaresJS",
+	"webDir": "app",
+	"plugins": {
+		"CapacitorHttp": {
+			"enabled": true
+		}
+	},
+	"server": {
+		"hostname": "localhost",
+		"androidScheme": "https"
+	},
+	"loggingBehavior": "none"
+}

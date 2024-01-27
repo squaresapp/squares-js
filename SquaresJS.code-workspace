@@ -36,46 +36,18 @@
 				"type": "android-webview",
 				"request": "attach",
 				"sourceMaps": true,
-				"webRoot": "${workspaceFolder}/app",
+				"webRoot": "${workspaceFolder}/build",
 				"sourceMapPathOverrides": {
 		                "webpack:/*": "${workspaceFolder}/*"
 		            }
 			},
 			{
-				"name": "Debug Active Cover Function (Electron)",
+				"name": "Launch Chrome",
 				"type": "chrome",
 				"request": "launch",
-				"runtimeExecutable": "${workspaceFolder}/../Moduless/node_modules/electron/cli.js",
-				"cwd": "${workspaceFolder}",
-				"runtimeArgs": [
-					"${workspaceFolder}/../Moduless/build/moduless.js",
-					"--remote-debugging-port=9222"
-				],
 				"sourceMaps": true,
-				"timeout": 2000,
-			},
-			{
-				"name": "Debug Active Cover Function (Node.js)",
-				"type": "node",
-				"request": "launch",
-				"cwd": "${workspaceFolder}",
-				"program": "${workspaceFolder}/../Moduless/build/moduless.js",
-				"sourceMaps": true,
-				"timeout": 2000
-			},
-			{
-				"name": "Debug All Cover Functions",
-				"type": "chrome",
-				"request": "launch",
-				"runtimeExecutable": "${workspaceFolder}/../node_modules/.bin/electron",
-				"cwd": "${workspaceFolder}",
-				"runtimeArgs": [
-					"${workspaceFolder}/../Moduless/build/moduless.js",
-					"--remote-debugging-port=9222",
-					"expression=(cover)"
-				],
-				"sourceMaps": true,
-				"timeout": 2000
+				"url": "http://localhost:5155/",
+				"webRoot": "${workspaceFolder}/build"
 			}
 		]
 	},

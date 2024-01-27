@@ -23,8 +23,8 @@
 		]
 	},
 	"include": [
-		"core/**/*.ts",
 		"node_modules/@squaresapp/rawjs/*.ts",
-		"node_modules/@squaresapp/hatjs/*.ts",
+		"core/**/*.ts",
+		"cover/**/*.ts"
 	]
 }

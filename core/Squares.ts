@@ -31,7 +31,7 @@ namespace SquaresJS
 		readonly anchorPosterIndex?: number;
 		
 		/**
-		 * 
+		 * Stores the element where the viewport is rendered.
 		 */
 		readonly viewportElement?: HTMLElement;
 		
@@ -62,7 +62,7 @@ namespace SquaresJS
 	/** */
 	export class Squares
 	{
-		readonly head;
+		readonly head: HTMLElement;
 		
 		/** */
 		constructor(private readonly options: IGridOptions)
@@ -72,14 +72,14 @@ namespace SquaresJS
 				{
 					width: "-webkit-fill-available",
 					height: "100%",
-					backgroundColor: "transparent"
+					backgroundColor: "transparent",
 				},
 				this.grid = new Grid(options),
 				raw.on("connected", () =>
 				{
 					// This should only be called when starting at the grid.
-					// If we're starting at a page, we need to replace state with the
-					// page index
+					// If we're starting at a page, we need to replace state
+					// with the page index
 					History.push(IHistoryMarker.gridIndex, options.gridPath || "/");
 				}),
 				raw.on("squares:posterselected", ev =>
@@ -176,7 +176,6 @@ namespace SquaresJS
 					const opacity = 1 - pct;
 					s.opacity = (opacity > 0.99 ? 1 : opacity).toString();
 					
-					
 					//if (Number(s.opacity) > 0.5) debugger;
 				}),
 				raw.on("squares:disconnect", () =>
@@ -204,5 +203,3 @@ namespace SquaresJS
 		overflow: "hidden !"
 	});
 }
-
-class Squares extends SquaresJS.Squares { }

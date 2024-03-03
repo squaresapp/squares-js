@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"outFile": "build/squares.js",
+		"outFile": "build/debug.squares.js",
 		"composite": true,
 		"module": "system",
 		"moduleResolution": "node",

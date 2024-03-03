@@ -4,5 +4,6 @@ node_modules
 package-lock.json
 build/package.json
 build/squares.*
+build/debug.squares.*
 android/*
 ios/*

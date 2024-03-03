@@ -32,9 +32,9 @@
 		"ionic:build": "cd .",
 		"ios-dev": "ionic cap run ios --external --livereload",
 		"android-dev": "ionic cap run android --external --livereload",
-		"esm": "sed 's/\\/\\/+ //' ./bundle/squares.js > ./bundle/squares.esm.js",
-		"bundle": "tsc -p tsconfig.release.json && terser ./bundle/squares.js > ./bundle/squares.js && npm run esm",
-		"release": "npm run bundle && cd ./bundle && cp ../package.json ./package.json && np && cp ./package.json ../package.json"
+		"esm": "sed 's/\\/\\/+ //' ./build/squares.js > ./build/squares.esm.js",
+		"bundle": "tsc -p tsconfig.release.json && terser ./build/squares.js > ./build/squares.js && npm run esm",
+		"release": "npm run bundle && cd ./build && cp ../package.json ./package.json && np && cp ./package.json ../package.json"
 	},
 	"license": "MIT",
 	"dependencies": {

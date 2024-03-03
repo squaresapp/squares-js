@@ -6,7 +6,7 @@ namespace Cover
 	/** */
 	export async function coverSquares()
 	{
-		const sq = new Squares({
+		const sq = new SquaresJS.Squares({
 			gridPath: "/",
 			maxPosterCount: 20,
 			anchorPosterIndex: 0,

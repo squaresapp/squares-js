@@ -2,5 +2,9 @@
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
 		"outFile": "build/squares.js"
-	}
+	},
+	"include": [
+		"node_modules/@squaresapp/rawjs/*.ts",
+		"core/**/*.ts",
+	]
 }

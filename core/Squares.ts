@@ -145,7 +145,6 @@ namespace SquaresJS
 						this.head.style.backgroundColor = "rgba(0, 0, 0, 0.01)";
 						this.grid.head.style.backgroundColor = "rgba(0, 0, 0, 0.01)";
 						await wait(200);
-						//page.head.style.backgroundColor = "transparent";
 					});
 					
 					setTimeout(async () =>
@@ -175,8 +174,6 @@ namespace SquaresJS
 					s.transform = translateZ(pct * translateZMax + "px");
 					const opacity = 1 - pct;
 					s.opacity = (opacity > 0.99 ? 1 : opacity).toString();
-					
-					//if (Number(s.opacity) > 0.5) debugger;
 				}),
 				raw.on("squares:disconnect", () =>
 				{

@@ -141,9 +141,7 @@ namespace SquaresJS
 	const indexPrefix = "index:";
 	
 	/** */
-	export const showClass = raw.css({
-		display: "block !",
-	});
+	export const getShowClass = () => raw.css({ display: "block !" });
 	
 	/** */
 	export function wait(ms = 0)

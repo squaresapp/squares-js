@@ -9,7 +9,10 @@ namespace SquaresJS
 		private readonly scrollable;
 		
 		/** */
-		constructor(sections: HTMLElement[])
+		constructor(
+			sections: HTMLElement[],
+			private readonly sourcePoster: HTMLElement,
+			private readonly path: string)
 		{
 			this.swiper = new Swiper();
 			
@@ -213,7 +216,7 @@ namespace SquaresJS
 		/** */
 		private disconnect()
 		{
-			dispatch(this, "squares:disconnect");
+			dispatch(this, "squares:exit", { path: this.path, sourcePoster: this.sourcePoster });
 			this.head.remove();
 		}
 	}

@@ -26,6 +26,22 @@ namespace SquaresJS
 		/** */
 		export function push(index: number, path: string)
 		{
+			// Don't allow full foreign URLs to be used as a path.
+			let url: URL | null = null;
+			
+			try
+			{
+				url = new URL(path);
+			}
+			catch (e) { }
+			
+			if (url)
+			{
+				const lo = window.location;
+				if (lo.hostname !== url.hostname || lo.protocol !== url.protocol)
+					path = "#" + path;
+			}
+			
 			const marker: IHistoryMarker = { index };
 			history.pushState(marker, "", path);
 		}

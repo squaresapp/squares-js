@@ -3,9 +3,9 @@ declare namespace Raw
 {
 	interface EventMap extends HTMLElementEventMap
 	{
-		"squares:disconnect": Event;
 		"squares:retract": CustomEvent<{ amount: number }>;
 		"squares:posterselected": CustomEvent<{ poster: HTMLElement; }>;
+		"squares:exit": CustomEvent<{ sourcePoster: HTMLElement, path: string }>;
 	}
 }
 

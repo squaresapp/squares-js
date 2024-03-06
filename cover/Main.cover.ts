@@ -33,6 +33,19 @@ namespace Cover
 			},
 		});
 		
+		raw.style(
+			"*", {
+					position: "relative",
+					padding: 0,
+					margin: 0,
+					zIndex: 0,
+					boxSizing: "border-box",
+					webkitFontSmoothing: "antialiased",
+					color: "inherit",
+					fontSize: "inherit",
+				},
+		).attach();
+		
 		raw.get(document.documentElement)({
 			fontFamily: "sans-serif",
 			background: "black"

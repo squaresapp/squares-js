@@ -119,7 +119,7 @@ namespace SquaresJS
 			const index = getIndex(selectedPoster);
 			const { sections, path } = this.options.requestPage(selectedPoster, index);
 			
-			const page = raw.get(new Page(sections))(
+			const page = raw.get(new Page(sections, selectedPoster, path))(
 				{
 					position: "absolute",
 					top: 0,
@@ -150,7 +150,7 @@ namespace SquaresJS
 					setTimeout(async () =>
 					{
 						for (let e = this.grid.head.parentElement; e; e = e.parentElement)
-							e.classList.add(noOverflowClass);
+							e.classList.add(this.noOverflowClass);
 						
 						const s = this.grid.head.style;
 						s.transitionDuration = transitionDuration;
@@ -175,12 +175,12 @@ namespace SquaresJS
 					const opacity = 1 - pct;
 					s.opacity = (opacity > 0.99 ? 1 : opacity).toString();
 				}),
-				raw.on("squares:disconnect", () =>
+				raw.on("squares:exit", () =>
 				{
 					this.grid.head.style.transitionDuration = transitionDuration;
 					
 					for (let e = this.grid.head.parentElement; e; e = e.parentElement)
-						e.classList.remove(noOverflowClass);
+						e.classList.remove(this.noOverflowClass);
 					
 					History.push(IHistoryMarker.gridIndex, this.options.gridPath || "/");
 				})
@@ -190,13 +190,14 @@ namespace SquaresJS
 			this._page = page;
 			return path;
 		}
+		
+		/** */
+		private readonly noOverflowClass = raw.css({
+			overflow: "hidden !"
+		});
 	}
 	
 	const transitionDuration = "0.5s";
 	const translateZ = (amount: string) => `perspective(10px) translateZ(${amount})`;
 	const translateZMax = -3;
-	
-	const noOverflowClass = raw.css({
-		overflow: "hidden !"
-	});
 }

@@ -300,7 +300,7 @@ namespace SquaresJS
 				const visibleItemStart = visibleRowStart * this.size;
 				const visibleItemEnd = visibleItemStart + maxItemsPerScreen;
 				const elementsWithTop = new Set(getByClass(Const.hasCssTop, this.postersElement));
-				const elementsVisible = new Set(getByClass(showClass, this.postersElement));
+				const elementsVisible = new Set(getByClass(getShowClass(), this.postersElement));
 				const children = Array.from(this.postersElement.children)
 					.filter(e => e instanceof HTMLDivElement);
 				
@@ -318,7 +318,7 @@ namespace SquaresJS
 					const sign = getIndex(e) > 0 ? 1 : -1;
 					const pct = (100 * this.rowOf(e) * sign).toFixed(5);
 					e.style.top = `calc(${pct}% / var(${Const.sizeVar}))`;
-					e.classList.add(Const.hasCssTop, showClass);
+					e.classList.add(Const.hasCssTop, getShowClass());
 					
 					elementsWithTop.delete(e);
 					elementsVisible.delete(e);
@@ -331,7 +331,7 @@ namespace SquaresJS
 				}
 				
 				for (const e of elementsVisible)
-					e.classList.remove(showClass);
+					e.classList.remove(getShowClass());
 				
 				if (y !== this.lastY)
 				{

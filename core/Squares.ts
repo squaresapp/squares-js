@@ -106,7 +106,9 @@ namespace SquaresJS
 		/** */
 		readonly grid;
 		
-		/** */
+		/**
+		 * Gets the current page being displayed, or null if the grid is being displayed.
+		 */
 		get page()
 		{
 			return this._page;

@@ -15,6 +15,8 @@ namespace SquaresJS
 		/** */
 		constructor(readonly options: IGridOptions)
 		{
+			this.maxPosterCount = options.maxPosterCount || 0;
+			
 			this.head = raw.div(
 				"squares-js-grid",
 				unselectable,
@@ -57,6 +59,21 @@ namespace SquaresJS
 				)
 			);
 		}
+		
+		/**
+		 * Extends the number of posters that can be displayed in the UI.
+		 * Used to implement refresh functionality.
+		 */
+		extendPosterCount(count: number)
+		{
+			if (count <= this.maxPosterCount)
+				return;
+			
+			this.maxPosterCount = count;
+			this.maybeFetch(2);
+		}
+		
+		private maxPosterCount = 0;
 		
 		/** */
 		private get heightRatio()
@@ -165,7 +182,7 @@ namespace SquaresJS
 		}
 		
 		/**
-		 * Gets the number of posters that exist within the DOM.
+		 * Gets the number of posters that currently exist within the DOM.
 		 */
 		get posterCount()
 		{
@@ -181,8 +198,8 @@ namespace SquaresJS
 			let rangeEnd = rangeStart + pullCount;
 			let canContinue = true;
 			
-			if (this.options.maxPosterCount)
-				rangeEnd = Math.min(this.options.maxPosterCount, rangeEnd);
+			if (this.maxPosterCount)
+				rangeEnd = Math.min(this.maxPosterCount, rangeEnd);
 			
 			for (let i = rangeStart; i < rangeEnd; i++)
 			{

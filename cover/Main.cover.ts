@@ -6,9 +6,11 @@ namespace Cover
 	/** */
 	export async function coverSquares()
 	{
+		let maxPosterCount = 10;
+		
 		const sq = new SquaresJS.Squares({
 			gridPath: "/",
-			maxPosterCount: 20,
+			maxPosterCount,
 			anchorPosterIndex: 0,
 			viewportElement: document.body,
 			
@@ -57,7 +59,25 @@ namespace Cover
 				margin: 0,
 				padding: 0,
 			},
-			sq
+			sq,
+			raw.div(
+				{
+					position: "fixed",
+					top: "10px",
+					right: "10px",
+					padding: "20px 50px",
+					borderRadius: "5px",
+					backgroundColor: "blue",
+					color: "white",
+					fontWeight: 700
+				},
+				raw.text("More"),
+				raw.on("click", () =>
+				{
+					maxPosterCount += 3;
+					sq.grid.extendPosterCount(maxPosterCount);
+				})
+			)
 		);
 	}
 	

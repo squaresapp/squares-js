@@ -1,4 +1,3 @@
-/// <reference path="Retractable.ts" />
 
 namespace SquaresJS
 {
@@ -217,23 +216,4 @@ namespace SquaresJS
 			this.head.remove();
 		}
 	}
-	
-	//# 
-	//# 
-	//# 
-	
-	/** * /
-	export class RetractablePage extends Retractable
-	{
-		/** * /
-		constructor(underLayer: HTMLElement, sections: HTMLElement[], path: string)
-		{
-			super({
-				underLayer,
-				contentElements: sections,
-				historyMarker: IHistoryMarker.gridIndex,
-				historyPath: path || "/"
-			});
-		}
-	}*/
 }

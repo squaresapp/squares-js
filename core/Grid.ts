@@ -25,7 +25,10 @@ namespace SquaresJS
 					minHeight: "100%",
 					overflowY: "auto",
 				},
-				raw.on("scroll", () => this.maybeRedraw(true)),
+				raw.on("scroll", () =>
+				{
+					this.maybeRedraw(true);
+				}),
 				this.postersElement = raw.div(
 					"squares-js-posters",
 					{
@@ -64,13 +67,13 @@ namespace SquaresJS
 		 * Extends the number of posters that can be displayed in the UI.
 		 * Used to implement refresh functionality.
 		 */
-		extendPosterCount(count: number)
+		extendPosterCount(newPosterCount: number)
 		{
-			if (count <= this.maxPosterCount)
-				return;
-			
-			this.maxPosterCount = count;
-			this.maybeFetch(2);
+			if (newPosterCount > this.maxPosterCount)
+			{
+				this.maxPosterCount = newPosterCount;
+				this.maybeFetch(2);
+			}
 		}
 		
 		private maxPosterCount = 0;
@@ -165,20 +168,12 @@ namespace SquaresJS
 		 */
 		private calculateAutoSize()
 		{
-			const dp1 = window.devicePixelRatio === 1;
+			const isTouch = window.matchMedia("(pointer: coarse)").matches;
 			const width = this.viewportElement.offsetWidth;
-			const logicalWidth = width / window.devicePixelRatio;
 			
-			if (logicalWidth <= (dp1 ? 900 : 450))
-				return 2;
-			
-			if (logicalWidth <= (dp1 ? 1400 : 700))
-				return 3;
-			
-			if (logicalWidth <= 1800)
-				return 4;
-			
-			return 5;
+			return isTouch ?
+				Math.max(3, Math.floor(width / 140)) :
+				Math.max(2, Math.round(width / 250));
 		}
 		
 		/**
@@ -296,7 +291,7 @@ namespace SquaresJS
 		/** */
 		private selectPoster(poster: HTMLElement)
 		{
-			dispatch(this.head, "squares:posterselected", { poster });
+			dispatch(this.head, "squares:enter", { selectedElement: poster });
 		}
 		
 		/** */
@@ -352,6 +347,24 @@ namespace SquaresJS
 				
 				if (y !== this.lastY)
 				{
+					let region: EdgeCollisionRegion | null = null;
+					const bottom = this.head.scrollHeight - this.head.offsetHeight;
+					
+					if (this.lastY > 0 && y <= 0)
+						region = "top";
+					
+					else if (this.lastY <= 0 && y > 0)
+						region = "top-exit";
+					
+					else if (this.lastY >= bottom && y < bottom)
+						region = "bottom-exit";
+					
+					else if (y >= bottom && this.lastY < bottom)
+						region = "bottom";
+					
+					if (region)
+						dispatch(this.head, "squares:scrolledgecollision", { region });
+					
 					this.lastY = y;
 					isNearingBottom = (y + this.height) > (rowCount - 1) * rowHeight;
 				}
@@ -362,6 +375,8 @@ namespace SquaresJS
 		}
 		
 		private lastY = -1;
+		
+		
 		
 		/**
 		 * Returns the sequential index of the row in which

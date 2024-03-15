@@ -4,13 +4,16 @@ declare namespace Raw
 	interface EventMap extends HTMLElementEventMap
 	{
 		"squares:retract": CustomEvent<{ amount: number }>;
-		"squares:posterselected": CustomEvent<{ poster: HTMLElement; }>;
-		"squares:exit": CustomEvent<{ sourcePoster: HTMLElement, path: string }>;
+		"squares:enter": CustomEvent<{ selectedElement: HTMLElement; }>;
+		"squares:exit": CustomEvent<{  }>;
+		"squares:scrolledgecollision": CustomEvent<{ region: SquaresJS.EdgeCollisionRegion }>;
 	}
 }
 
 namespace SquaresJS
 {
+	export type EdgeCollisionRegion = "top" | "bottom" | "top-exit" | "bottom-exit";
+	
 	/**
 	 * Provides a way to dispatch a bubbling CustomEvent
 	 * object with type-safe .details property, using a custom

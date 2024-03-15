@@ -74,7 +74,7 @@ namespace Cover
 				raw.text("More"),
 				raw.on("click", () =>
 				{
-					maxPosterCount += 3;
+					maxPosterCount += 1;
 					sq.grid.extendPosterCount(maxPosterCount);
 				})
 			)

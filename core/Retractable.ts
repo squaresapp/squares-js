@@ -1,24 +1,38 @@
-/// <reference path="Retractable.ts" />
 
 namespace SquaresJS
 {
 	/** */
-	export class Page
+	export interface IRetractableOptions
+	{
+		readonly underLayer: HTMLElement;
+		readonly contentElements: HTMLElement | HTMLElement[];
+	}
+	
+	/**
+	 * 
+	 */
+	export class Retractable
 	{
 		readonly head;
 		readonly swiper;
 		private readonly scrollable;
 		
 		/** */
-		constructor(
-			sections: HTMLElement[],
-			private readonly path: string)
+		constructor(private readonly options: IRetractableOptions)
 		{
-			this.swiper = new Swiper();
-			
 			this.head = raw.div(
-				"squares-js-page",
+				"retractable-hat",
 				{
+					position: "absolute",
+					top: 0,
+					left: 0,
+					bottom: 0,
+					right: 0,
+					transitionDuration,
+					transitionProperty: "transform",
+					transform: "translateY(110%) " + translateZ(translateZMax + "px"),
+					
+					// Necessary?
 					width: "100%",
 					height: "100%",
 				},
@@ -30,11 +44,45 @@ namespace SquaresJS
 					// This had to be done in a setTimeout before
 					// Make sure this works like this in Safari.
 					this.scrollable.scrollTo(0, window.innerHeight);
+					
+					setTimeout(async () =>
+					{
+						this.head.style.transform = "translateY(0) " + translateZ("0px");
+						await waitTransitionEnd(this.head);
+						
+						// Fixes a screwy bug on Safari that causes the grid to not 
+						// render. Apparently setting a background color on the page
+						// fixes this.
+						await wait(1000);
+						this.head.style.backgroundColor = "rgba(0, 0, 0, 0.01)";
+						this.options.underLayer.style.backgroundColor = "rgba(0, 0, 0, 0.01)";
+						await wait(200);
+					});
+					
+					setTimeout(async () =>
+					{
+						for (let e = this.options.underLayer.parentElement; e; e = e.parentElement)
+							e.classList.add(this.noOverflowClass);
+						
+						const s = this.options.underLayer.style;
+						s.transitionDuration = transitionDuration;
+						s.transform = translateZ(0 + "px");
+						s.opacity = "1";
+						await wait(1);
+						s.transform = translateZ(translateZMax + "px");
+						s.opacity = "0";
+					});
 				}),
-				this.swiper
+				raw.on(this.options.underLayer, "scroll", () =>
+				{
+					if (this.head.isConnected)
+						this.retract("panic");
+				}),
+				this.swiper = new Swiper()
 			);
 			
 			this.swiper.addPane(raw.div("exit-left-pane"));
+			
 			this.swiper.addPane(this.scrollable = raw.div(
 				"scrollable",
 				{
@@ -49,28 +97,26 @@ namespace SquaresJS
 					position: "relative"
 				}),
 				raw.div("exiter exit-top"),
-				sections,
+				this.options.contentElements,
 				raw.div("exiter exit-bottom"),
 			));
 			
+			// There's some weirdness here.
 			this.setVisibleSection(0);
 		}
 		
 		/** */
-		setVisibleSection(sectionIndex: number)
+		private setVisibleSection(sectionIndex: number)
 		{
-			if (this.head.isConnected)
-			{
-				sectionIndex = Math.max(0, sectionIndex);
-				const e = this.scrollable;
-				const children = Array.from(e.children).slice(1, -1) as HTMLElement[];
-				const child = children[sectionIndex];
-				e.scrollTo(0, child.scrollTop);
-			}
-			else this.deferredVisibleIndex = sectionIndex;
+			if (!this.head.isConnected)
+				return;
+			
+			sectionIndex = Math.max(0, sectionIndex);
+			const e = this.scrollable;
+			const children = Array.from(e.children).slice(1, -1) as HTMLElement[];
+			const child = children[sectionIndex];
+			e.scrollTo(0, child.scrollTop);
 		}
-		
-		private deferredVisibleIndex = -1;
 		
 		/** */
 		private setupRetractionTracker()
@@ -99,9 +145,7 @@ namespace SquaresJS
 					clipLeft = 1 - scrollLeft / w;
 				
 				else if (scrollTop > scrollHeight - offsetHeight * 2)
-				{
 					clipBottom = scrollTop - (scrollHeight - offsetHeight);
-				}
 				
 				clipLeft *= 100;
 				this.head.style.clipPath = `inset(${clipTop}px 0 ${clipBottom}px ${clipLeft}%)`;
@@ -119,7 +163,13 @@ namespace SquaresJS
 					retractPct = (scrollHeight - offsetHeight - scrollTop) / offsetHeight;
 				
 				if (retractPct > 0)
-					dispatch(this, "squares:retract", { amount: retractPct });
+				{
+					const s = this.options.underLayer.style;
+					s.transitionDuration = "0s";
+					s.transform = translateZ(retractPct * translateZMax + "px");
+					const opacity = 1 - retractPct;
+					s.opacity = (opacity > 0.99 ? 1 : opacity).toString();
+				}
 				
 				// Remove the element if necessary
 				clearTimeout(timeoutId);
@@ -199,9 +249,7 @@ namespace SquaresJS
 						slideAway("y", scrollTop);
 					
 					// No inertia
-					else
-					{
-					}
+					else { }
 				});
 			}
 			else
@@ -213,27 +261,22 @@ namespace SquaresJS
 		/** */
 		private disconnect()
 		{
-			dispatch(this, "squares:exit", { path: this.path });
+			this.options.underLayer.style.transitionDuration = transitionDuration;
+			
+			for (let e = this.options.underLayer.parentElement; e; e = e.parentElement)
+				e.classList.remove(this.noOverflowClass);
+			
+			dispatch(this, "squares:exit");
 			this.head.remove();
 		}
+		
+		/** */
+		private readonly noOverflowClass = raw.css({
+			overflow: "hidden !"
+		});
 	}
 	
-	//# 
-	//# 
-	//# 
-	
-	/** * /
-	export class RetractablePage extends Retractable
-	{
-		/** * /
-		constructor(underLayer: HTMLElement, sections: HTMLElement[], path: string)
-		{
-			super({
-				underLayer,
-				contentElements: sections,
-				historyMarker: IHistoryMarker.gridIndex,
-				historyPath: path || "/"
-			});
-		}
-	}*/
+	const transitionDuration = "0.5s";
+	const translateZ = (amount: string) => `perspective(10px) translateZ(${amount})`;
+	const translateZMax = -3;
 }

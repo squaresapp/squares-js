@@ -63,10 +63,13 @@ namespace SquaresJS
 	export class Squares
 	{
 		readonly head: HTMLElement;
+		readonly grid;
 		
 		/** */
 		constructor(private readonly options: IGridOptions)
 		{
+			const gridPath = options.gridPath || "/";
+			
 			this.head = raw.div(
 				"squares-js-squares",
 				{
@@ -80,13 +83,26 @@ namespace SquaresJS
 					// This should only be called when starting at the grid.
 					// If we're starting at a page, we need to replace state
 					// with the page index
-					History.push(IHistoryMarker.gridIndex, options.gridPath || "/");
+					History.push(IHistoryMarker.gridIndex, gridPath);
 				}),
-				raw.on("squares:posterselected", ev =>
+				raw.on("squares:enter", ev =>
 				{
-					const path = this.showPage(ev.detail.poster);
-					const index = getIndex(ev.detail.poster);
+					const e = ev.detail.selectedElement;
+					const index = getIndex(e);
+					const { sections, path } = this.options.requestPage(e, index);
+					
+					this._currentPage = new Retractable({
+						underLayer: this.grid.head,
+						contentElements: sections,
+					});
+					
+					this.grid.head.after(this._currentPage.head);
 					History.push(index, path);
+				}),
+				raw.on("squares:exit", ev =>
+				{
+					if (ev.target === this.currentPage?.head)
+						History.push(IHistoryMarker.gridIndex, gridPath);
 				}),
 				raw.on(window, "popstate", ev =>
 				{
@@ -94,112 +110,16 @@ namespace SquaresJS
 						return;
 					
 					if (ev.state.index === IHistoryMarker.gridIndex)
-						return this.page?.retract();
-					
-					const e = getByIndex(ev.state.index);
-					if (e)
-						this.showPage(e);
+						return this.currentPage?.retract();
 				})
 			);
 		}
 		
 		/** */
-		readonly grid;
-		
-		/**
-		 * Gets the current page being displayed, or null if the grid is being displayed.
-		 */
-		get page()
+		get currentPage()
 		{
-			return this._page;
+			return this._currentPage;
 		}
-		private _page: Page | null = null;
-		
-		/** */
-		private showPage(selectedPoster: HTMLElement)
-		{
-			const index = getIndex(selectedPoster);
-			const { sections, path } = this.options.requestPage(selectedPoster, index);
-			
-			const page = raw.get(new Page(sections, selectedPoster, path))(
-				{
-					position: "absolute",
-					top: 0,
-					left: 0,
-					bottom: 0,
-					right: 0,
-					transitionDuration,
-					transitionProperty: "transform",
-					transform: "translateY(110%) " + translateZ(translateZMax + "px"),
-				},
-				raw.on("connected", () =>
-				{
-					setTimeout(async () =>
-					{
-						page.head.style.transform = "translateY(0) " + translateZ("0px");
-						await waitTransitionEnd(page.head);
-						
-						// Fixes a screwy bug on Safari that causes the grid to not 
-						// render. Apparently setting a background color on the page
-						// fixes this.
-						await wait(1000);
-						page.head.style.backgroundColor = "rgba(0, 0, 0, 0.01)";
-						this.head.style.backgroundColor = "rgba(0, 0, 0, 0.01)";
-						this.grid.head.style.backgroundColor = "rgba(0, 0, 0, 0.01)";
-						await wait(200);
-					});
-					
-					setTimeout(async () =>
-					{
-						for (let e = this.grid.head.parentElement; e; e = e.parentElement)
-							e.classList.add(this.noOverflowClass);
-						
-						const s = this.grid.head.style;
-						s.transitionDuration = transitionDuration;
-						s.transform = translateZ(0 + "px");
-						s.opacity = "1";
-						await wait(1);
-						s.transform = translateZ(translateZMax + "px");
-						s.opacity = "0";
-					});
-				}),
-				raw.on(this.grid.head, "scroll", async () =>
-				{
-					if (page.head.isConnected)
-						await page.retract("panic");
-				}),
-				raw.on("squares:retract", ev =>
-				{
-					const pct = ev.detail.amount;
-					const s = this.grid.head.style;
-					s.transitionDuration = "0s";
-					s.transform = translateZ(pct * translateZMax + "px");
-					const opacity = 1 - pct;
-					s.opacity = (opacity > 0.99 ? 1 : opacity).toString();
-				}),
-				raw.on("squares:exit", () =>
-				{
-					this.grid.head.style.transitionDuration = transitionDuration;
-					
-					for (let e = this.grid.head.parentElement; e; e = e.parentElement)
-						e.classList.remove(this.noOverflowClass);
-					
-					History.push(IHistoryMarker.gridIndex, this.options.gridPath || "/");
-				})
-			);
-			
-			this.grid.head.after(page.head);
-			this._page = page;
-			return path;
-		}
-		
-		/** */
-		private readonly noOverflowClass = raw.css({
-			overflow: "hidden !"
-		});
+		private _currentPage: Retractable | null = null;
 	}
-	
-	const transitionDuration = "0.5s";
-	const translateZ = (amount: string) => `perspective(10px) translateZ(${amount})`;
-	const translateZMax = -3;
 }

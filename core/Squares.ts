@@ -96,7 +96,11 @@ namespace SquaresJS
 						contentElements: sections,
 					});
 					
-					this.grid.head.after(this._page.head);
+					if (options.viewportElement)
+						options.viewportElement.append(this._page.head);
+					else
+						this.grid.head.after(this._page.head);
+					
 					History.push(index, path);
 				}),
 				raw.on("squares:exit", ev =>
@@ -125,6 +129,5 @@ namespace SquaresJS
 			return this._page;
 		}
 		private _page: Retractable | null = null;
-		
 	}
 }

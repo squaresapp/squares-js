@@ -44,7 +44,7 @@ namespace SquaresJS
 		addPane(element: HTMLElement, at: number = -0)
 		{
 			const pane = raw.div(
-				"swiper-pane",
+				paneClass,
 				{
 					height: "100%",
 					overflowX: "hidden",
@@ -94,4 +94,6 @@ namespace SquaresJS
 			return this.head.childElementCount;
 		}
 	}
+	
+	const paneClass = "swiper-pane";
 }

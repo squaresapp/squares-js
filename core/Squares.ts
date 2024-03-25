@@ -91,17 +91,17 @@ namespace SquaresJS
 					const index = getIndex(e);
 					const { sections, path } = this.options.requestPage(e, index);
 					
-					this._currentPage = new Retractable({
+					this._page = new Retractable({
 						underLayer: this.grid.head,
 						contentElements: sections,
 					});
 					
-					this.grid.head.after(this._currentPage.head);
+					this.grid.head.after(this._page.head);
 					History.push(index, path);
 				}),
 				raw.on("squares:exit", ev =>
 				{
-					if (ev.target === this.currentPage?.head)
+					if (ev.target === this._page?.head)
 						History.push(IHistoryMarker.gridIndex, gridPath);
 				}),
 				raw.on(window, "popstate", ev =>
@@ -110,16 +110,21 @@ namespace SquaresJS
 						return;
 					
 					if (ev.state.index === IHistoryMarker.gridIndex)
-						return this.currentPage?.retract();
+						return this._page?.retract();
 				})
 			);
 		}
 		
-		/** */
-		get currentPage()
+		/**
+		 * Gets the current page being displayed in the Squares widget,
+		 * or null in the case when the grid is being displayed instead 
+		 * of a page.
+		 */
+		get page()
 		{
-			return this._currentPage;
+			return this._page;
 		}
-		private _currentPage: Retractable | null = null;
+		private _page: Retractable | null = null;
+		
 	}
 }

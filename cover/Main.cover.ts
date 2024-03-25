@@ -6,7 +6,7 @@ namespace Cover
 	/** */
 	export async function coverSquares()
 	{
-		let maxPosterCount = 10;
+		let maxPosterCount = 50;
 		
 		const sq = new SquaresJS.Squares({
 			gridPath: "/",
@@ -37,15 +37,15 @@ namespace Cover
 		
 		raw.style(
 			"*", {
-					position: "relative",
-					padding: 0,
-					margin: 0,
-					zIndex: 0,
-					boxSizing: "border-box",
-					webkitFontSmoothing: "antialiased",
-					color: "inherit",
-					fontSize: "inherit",
-				},
+				position: "relative",
+				padding: 0,
+				margin: 0,
+				zIndex: 0,
+				boxSizing: "border-box",
+				webkitFontSmoothing: "antialiased",
+				color: "inherit",
+				fontSize: "inherit",
+			},
 		).attach();
 		
 		raw.get(document.documentElement)({

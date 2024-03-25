@@ -71,6 +71,8 @@ namespace SquaresJS
 						await wait(1);
 						s.transform = translateZ(translateZMax + "px");
 						s.opacity = "0";
+						
+						
 					});
 				}),
 				raw.on(this.options.underLayer, "scroll", () =>
@@ -279,4 +281,6 @@ namespace SquaresJS
 	const transitionDuration = "0.5s";
 	const translateZ = (amount: string) => `perspective(10px) translateZ(${amount})`;
 	const translateZMax = -3;
+	
+	const animatingElements = new WeakSet<any>();
 }

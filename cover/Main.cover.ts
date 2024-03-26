@@ -12,6 +12,23 @@ namespace Cover
 			gridPath: "/",
 			maxPosterCount,
 			anchorPosterIndex: 0,
+			headerElement: raw.section(
+				{
+					position: "absolute",
+					top: 0,
+					left: 0,
+					right: 0,
+					height: "50vh",
+					textAlign: "center",
+					display: "flex",
+					alignContent: "center",
+					alignItems: "center",
+					justifyContent: "center",
+					zIndex: 1,
+					backgroundColor: "green"
+				},
+				raw.h1(raw.text("Hero section")),
+			),
 			viewportElement: document.body,
 			
 			requestPlaceholder()

@@ -13,9 +13,13 @@ namespace SquaresJS
 		private readonly postersElement;
 		
 		/** */
+		private headerCssHeight = "";
+		
+		/** */
 		constructor(readonly options: IGridOptions)
 		{
 			this.maxPosterCount = options.maxPosterCount || 0;
+			this.headerCssHeight = options.headerElement?.style.height || "";
 			
 			this.head = raw.div(
 				"squares-js-grid",
@@ -29,6 +33,7 @@ namespace SquaresJS
 				{
 					this.maybeRedraw(true);
 				}),
+				options.headerElement,
 				this.postersElement = raw.div(
 					"squares-js-posters",
 					{
@@ -46,6 +51,10 @@ namespace SquaresJS
 					}),
 					raw.on("connected", () =>
 					{
+						const e = options.headerElement;
+						if (e && !this.headerCssHeight)
+							this.headerCssHeight = getComputedStyle(e).getPropertyValue("height");
+						
 						this.updatePostersElementSize();
 						this._width = this.head.offsetWidth;
 						this._height = this.head.offsetHeight;
@@ -304,7 +313,9 @@ namespace SquaresJS
 			
 			if (this.posterCount > 0)
 			{
-				const y = this.head.scrollTop;
+				const he = this.options.headerElement;
+				const headerHeight = he ? parseInt(getComputedStyle(he).height) : 0;
+				const y = this.head.scrollTop - headerHeight;
 				const rowHeight = (this.width / this.size) * this.heightRatio;
 				const rowCount = this.posterCount / this.size;
 				const maxItemsPerScreen = (Math.ceil(this.height / rowHeight) + 1) * this.size;
@@ -329,7 +340,7 @@ namespace SquaresJS
 					
 					const sign = getIndex(e) > 0 ? 1 : -1;
 					const pct = (100 * this.rowOf(e) * sign).toFixed(5);
-					e.style.top = `calc(${pct}% / var(${Const.sizeVar}))`;
+					e.style.top = `calc(${this.headerCssHeight || 0} + ${pct}% / var(${Const.sizeVar}))`;
 					e.classList.add(Const.hasCssTop, getShowClass());
 					
 					elementsWithTop.delete(e);

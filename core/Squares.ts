@@ -31,6 +31,11 @@ namespace SquaresJS
 		readonly anchorPosterIndex?: number;
 		
 		/**
+		 * Specifies the element that displays before all the other squares in the grid.
+		 */
+		readonly headerElement?: HTMLElement;
+		
+		/**
 		 * Stores the element where the viewport is rendered.
 		 */
 		readonly viewportElement?: HTMLElement;

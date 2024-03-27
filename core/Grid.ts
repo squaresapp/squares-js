@@ -33,7 +33,14 @@ namespace SquaresJS
 				{
 					this.maybeRedraw(true);
 				}),
-				options.headerElement,
+				options.headerElement && raw.get(options.headerElement)(
+					{
+						position: "absolute",
+						top: 0,
+						left: 0,
+						right: 0,
+					}
+				),
 				this.postersElement = raw.div(
 					"squares-js-posters",
 					{
